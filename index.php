@@ -11,6 +11,36 @@
 <div class="container mt-5">
   <h3>Create Invoice</h3>
   <form id="invoiceForm">
+
+    <select class="form-select select2 mb-4 w-50" name="invoice[customer_id]" id="customerSelect" required>
+      <option value="">Select Customer</option>
+      <option value="1"
+        data-address="Aftabnagar"
+        data-phone="1233444"
+        data-email="wali@gmail.com"
+        data-name="Wali Ullah"
+      >Wali Ullah</option>
+
+      <option value="2"
+        data-address="Farmgate"
+        data-phone="55555"
+        data-email="wasi@gmail.com"
+        data-name="Wasi Ahmed"
+      >Wasi Ahmed</option>
+
+      <option value="3"
+        data-address="Badda"
+        data-phone="441233444"
+        data-email="aira@gmail.com"
+        data-name="Aira Rahman"
+      >Aira Rahman</option>
+    </select>
+
+    <p class="mb-1 text-muted">Name: <span class="fw-semibold" id="nameValue">:</span></p>
+    <p class="mb-1 text-muted">Address: <span class="fw-semibold" id="addressValue">:</span></p>
+    <p class="mb-1 text-muted">Phone: <span class="fw-semibold" id="phoneValue">:</span></p>
+    <p class="mb-4 text-muted">Email: <span class="fw-semibold" id="emailValue">:</span></p>
+
     <table class="table table-bordered" id="invoiceTable">
       <thead>
         <tr>
@@ -26,11 +56,9 @@
           <td>
             <select class="form-select item-select select2">
               <option value="">Select Item</option>
-              @foreach($items as $item)
-              <option value="{{ $item->id }}" data-price="{{ $item->sale_price }}">
-                [{{ $item->id }}] {{ $item->name }}
-              </option>
-              @endforeach
+              <option value="1" data-price="100">Item 1</option>
+              <option value="2" data-price="200">Item 2</option>
+              <option value="3" data-price="300">Item 3</option>
             </select>
           </td>
           <td><input type="number" class="form-control price" readonly></td>
@@ -40,6 +68,7 @@
         </tr>
       </tbody>
     </table>
+
     <button type="button" class="btn btn-primary mb-3" id="addRow">+ Add Item</button>
 
     <div class="row mb-2">
@@ -73,6 +102,21 @@
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  $('#customerSelect').select2({ placeholder: 'Select Customer', width: '100%' });
+
+  // Update customer info when selected
+  document.getElementById("customerSelect").addEventListener("change", function () {
+    const selected = this.options[this.selectedIndex];
+    document.getElementById("nameValue").textContent = selected.getAttribute("data-name") || ":";
+    document.getElementById("addressValue").textContent = selected.getAttribute("data-address") || ":";
+    document.getElementById("phoneValue").textContent = selected.getAttribute("data-phone") || ":";
+    document.getElementById("emailValue").textContent = selected.getAttribute("data-email") || ":";
+  });
+});
+</script>
 
 <script>
   function updateTotals() {
@@ -122,11 +166,9 @@
         <td>
           <select class="form-select item-select select2">
             <option value="">Select Item</option>
-            @foreach($items as $item)
-            <option value="{{ $item->id }}" data-price="{{ $item->sale_price }}">
-              [{{ $item->id }}] {{ $item->name }}
-            </option>
-            @endforeach
+            <option value="1" data-price="100">Item 1</option>
+            <option value="2" data-price="200">Item 2</option>
+            <option value="3" data-price="300">Item 3</option>
           </select>
         </td>
         <td><input type="number" class="form-control price" readonly></td>
@@ -144,9 +186,7 @@
   $(document).ready(function () {
     initSelect2($('.item-select'));
 
-    $('#addRow').click(function () {
-      addNewRow();
-    });
+    $('#addRow').click(addNewRow);
 
     $('#invoiceItems').on('change', '.item-select', function () {
       const selectedId = $(this).val();
